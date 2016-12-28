@@ -14,5 +14,6 @@ buildchk.err
 /siz_*.cmd
 /profiles/user/*
 /src/build.dat
+/src.bin
 /tools/amd64/idw/*
 /tools/x86/idw/*
