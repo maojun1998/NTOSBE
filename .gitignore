@@ -16,5 +16,5 @@ buildchk.err
 /src/build.dat
 /src.bin
 /tools/amd64/idw/*
-/tools/mips/idw/*
 /tools/x86/idw/*
+/tools/x86_mips/idw/*
