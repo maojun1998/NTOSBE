@@ -39,7 +39,16 @@ if [%SIZ_NTBLD%] equ [] (
 )
 
 REM //
-REM // Print logo
+REM // Launch command window.
+REM //
+
+if not [%1] equ [cmdwindow] (
+    start cmd /k sizzle.cmd cmdwindow
+    goto End
+)
+
+REM //
+REM // Print logo.
 REM //
 
 echo.
@@ -53,26 +62,24 @@ echo.
 echo.
 
 REM //
-REM // Call ntenv.cmd
+REM // Call ntenv.cmd.
 REM //
 
 call ntenv.cmd %SIZ_REPONAME% %SIZ_NTROOT% %SIZ_NTTREE% %SIZ_NTARCH% %SIZ_NTBLD%
 echo.
-echo.
 
 REM //
-REM // Set window and prompt style
+REM // Set window and prompt style.
 REM //
 
 title NTOSBE: %NTTARGET% [%NTROOT%]
 prompt [%COMPUTERNAME%: %USERNAME% // %NTTARGET%] $d$s$t$_$p$_$_$+$g
 
 REM //
-REM // Invoke shell
+REM // Change directory to NTROOT.
 REM //
 
 cd /d %NTROOT%
-cmd
 
 REM //
 REM // End

@@ -109,6 +109,17 @@ REM //
 call ntinfo.cmd
 
 REM //
+REM // Store the original global path variable content if this is the first
+REM // run. This is critical to make ntswitch.cmd work.
+REM //
+
+if "%DEFAULTPATH%"=="" (
+    set "DEFAULTPATH=%PATH%"
+) else (
+    set "PATH=%DEFAULTPATH%"
+)
+
+REM //
 REM // Set global path
 REM //
 
@@ -133,8 +144,14 @@ REM // is AMD64.
 REM //
 
 if [%PROCESSOR_ARCHITECTURE%] equ [AMD64] (
-    if [%NTARCH%] equ [x86] (
-        set BETOOLS=%BEROOT%\tools\%NTARCH%
+    if not [%NTARCH%] equ [amd64] (
+        if [%NTARCH%] equ [x86] (
+            REM // Building for x86 from AMD64 host: use x86 native tools.
+            set BETOOLS=%BEROOT%\tools\%NTARCH%
+        ) else (
+            REM // Building for non-x86 from AMD64 host: use x86 cross tools.
+            set BETOOLS=%BEROOT%\tools\x86_%NTARCH%
+        )
     )
 )
 

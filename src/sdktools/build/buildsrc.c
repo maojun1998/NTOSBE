@@ -2321,6 +2321,21 @@ FixDirInclude(PDIRREC DirDB, LPSTR dirbuf, LPSTR* pp)
                     !_stricmp(token, "386"))
                 {
                     DirInclude |= DIR_INCLUDE_X86;
+                } else if (!_stricmp(token, "MIPS"))
+                {
+                    DirInclude |= DIR_INCLUDE_MIPS;
+                } else if (!_stricmp(token, "ALPHA"))
+                {
+                    DirInclude |= DIR_INCLUDE_ALPHA;
+                } else if (!_stricmp(token, "PPC"))
+                {
+                    DirInclude |= DIR_INCLUDE_PPC;
+                } else if (!_stricmp(token, "ARM"))
+                {
+                    DirInclude |= DIR_INCLUDE_ARM;
+                } else if (!_stricmp(token, "AXP64"))
+                {
+                    DirInclude |= DIR_INCLUDE_AXP64;
                 } else if (!_stricmp(token, "32") ||
                            !_stricmp(token, "Win32"))
                 {

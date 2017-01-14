@@ -31,12 +31,12 @@ Targets:
 
 Useful Variables Set:
 
-    CPUTYPE={X86|AXP64|ALPHA|MPPC|IA64|AMD64|ARM}
+    CPUTYPE={X86|MIPS|ALPHA|AXP64|MPPC|IA64|AMD64|ARM}
 
 Optional Controls Variables (partial list), these are environment variables,
 remember they can be set with env=value on the command line as well:
 
-NOTE:  xxx_... is {MSC|X86|AXP64|MPPC|IA64|AMD64|ARM} where MSC_ applies to the C8 compiler
+NOTE:  xxx_... is {MSC|X86|MIPS|ALPHA|AXP64|MPPC|IA64|AMD64|ARM} where MSC_ applies to the C8 compiler
        independent of the cpu type.  Specific cpu_ will take precedence
        over the equivalent MSC_ variable.
 
@@ -1699,7 +1699,12 @@ CRT_INCLUDES=$(CRT_INCLUDES);$(STL6_INC_PATH)
 
 !IF "$(UMTYPE)" == "nt"
 
+!if $(MIPS)
+SUBSYSTEM=windowsce$(SUBSYSTEM_NATVER)
+POST_BUILD_CMD=$(LINK_NAME) /edit $@ /subsystem:native$(SUBSYSTEM_NATVER)
+!else
 SUBSYSTEM=native$(SUBSYSTEM_NATVER)
+!endif
 UMINCL=$(CRT_INCLUDES)
 
 STD_CALL_ENTRY=1
@@ -1710,7 +1715,13 @@ NOT_TERMINAL_SERVER_AWARE=1
 
 !ELSEIF "$(UMTYPE)" == "windows"
 
+# HACKHACK: for MIPS
+!if $(MIPS)
+SUBSYSTEM=windowsce$(SUBSYSTEM_WINVER)
+POST_BUILD_CMD=$(LINK_NAME) /edit $@ /subsystem:windows$(SUBSYSTEM_WINVER)
+!else
 SUBSYSTEM=windows$(SUBSYSTEM_WINVER)
+!endif
 UMINCL=$(CRT_INCLUDES)
 
 ! IF "$(UMENTRY)" == "winmain"
@@ -1729,7 +1740,13 @@ UMLIBS=$(UMLIBS) $(WIN32_LIBS) $(GUI32_LIBS)
 
 !ELSEIF "$(UMTYPE)" == "console"
 
+# HACKHACK: for MIPS
+!if $(MIPS)
+SUBSYSTEM=windowsce$(SUBSYSTEM_CONVER)
+POST_BUILD_CMD=$(LINK_NAME) /edit $@ /subsystem:console$(SUBSYSTEM_CONVER)
+!else
 SUBSYSTEM=console$(SUBSYSTEM_CONVER)
+!endif
 UMINCL=$(CRT_INCLUDES)
 
 ! IF "$(UMENTRY)" == "winmain"
@@ -1750,7 +1767,12 @@ UMLIBS=$(UMLIBS) $(WIN32_LIBS)
 
 !ELSEIF "$(UMTYPE)" == "ntss"
 
+!if $(MIPS)
+SUBSYSTEM=windowsce$(SUBSYSTEM_NATVER)
+POST_BUILD_CMD=$(LINK_NAME) /edit $@ /subsystem:native$(SUBSYSTEM_NATVER)
+!else
 SUBSYSTEM=native$(SUBSYSTEM_NATVER)
+!endif
 UMINCL=$(CRT_INCLUDES)
 
 STD_CALL_ENTRY=1
@@ -2221,6 +2243,9 @@ MAKEDLL=$(makedll)
 !IF $(X86)
 OBJECTS=$(X86_OBJECTS)
 DLLLIBOBJECTS=$(DLLLIBOBJECTS) $(X86_DLLLIBOBJECTS)
+!ELSEIF $(MIPS)
+OBJECTS=$(MIPS_OBJECTS)
+DLLLIBOBJECTS=$(DLLLIBOBJECTS) $(MIPS_DLLLIBOBJECTS)
 !ELSEIF $(MPPC)
 OBJECTS=$(MPPC_OBJECTS)
 DLLLIBOBJECTS=$(DLLLIBOBJECTS) $(MPPC_DLLLIBOBJECTS)
@@ -2330,7 +2355,10 @@ TARGETLIB=$(DDK_LIB_PATH)\wdm.lib
 !ELSEIF "$(DRIVERTYPE)" == "VXD"
 TARGETEXT=vxd
 !ELSE
-TARGETLIB=$(DDK_LIB_PATH)\ntoskrnl.lib $(DDK_LIB_PATH)\hal.lib $(DDK_LIB_PATH)\wmilib.lib
+TARGETLIB=$(DDK_LIB_PATH)\ntoskrnl.lib $(DDK_LIB_PATH)\hal.lib
+! IF $(_NT_TARGET_VERSION) >= 0x501
+TARGETLIB=$(TARGETLIB) $(DDK_LIB_PATH)\wmilib.lib
+! ENDIF
 !ENDIF
 
 #
@@ -2357,7 +2385,10 @@ TARGETEXT=sys
 !if "$(DRIVERTYPE)" == "wdm" || "$(DRIVERTYPE)" == "WDM"
 TARGETLIB=$(DDK_LIB_PATH)\wdm.lib
 !ELSE
-TARGETLIB=$(DDK_LIB_PATH)\ntoskrnl.lib $(DDK_LIB_PATH)\hal.lib $(DDK_LIB_PATH)\wmilib.lib
+TARGETLIB=$(DDK_LIB_PATH)\ntoskrnl.lib $(DDK_LIB_PATH)\hal.lib
+! IF $(_NT_TARGET_VERSION) >= 0x501
+TARGETLIB=$(TARGETLIB) $(DDK_LIB_PATH)\wmilib.lib
+! ENDIF
 !ENDIF
 
 #
@@ -2742,7 +2773,7 @@ LINK_REF_FLAG=-OPT:REF -OPT:ICF
 !ifdef NOT_TERMINAL_SERVER_AWARE
 TSLINKER_FLAG=
 !else
-!       if $(_NT_TOOLS_VERSION) >= 0x700
+!       if $(_NT_TOOLS_VERSION) >= 0x700 && $(X86)
 TSLINKER_FLAG=/tsaware
 !       else
 TSLINKER_FLAG=
@@ -2769,6 +2800,10 @@ LINK_LIB_IGNORE_FLAG= $(LINK_LIB_IGNORE_FLAG),4108,4088,4218
 # 4218: non-native module found; restarting link with /LTCG
 # 4235: /LTCG specified but no code generation required; remove /LTCG from the link command line to improve linker performance
 LINK_LIB_IGNORE_FLAG= $(LINK_LIB_IGNORE_FLAG),4218,4235
+!endif
+
+!if !$(FREEBUILD)
+LINK_NO_RELEASE=1
 !endif
 
 !ifdef LINK_NO_RELEASE
@@ -2933,6 +2968,14 @@ LINKER_FLAGS = $(LINKER_FLAGS) $(LINKER_DBG_SECTION) -debugtype:cv $(LINK_OS_VER
 
 LIBRARIAN_FLAGS = $(LINK_LIB_IGNORE_FLAG) $(LIBRARIAN_FLAGS) $(LINKER_WX_SWITCH) -nodefaultlib
 LIBRARIAN_FLAGS = $(LIBRARIAN_FLAGS) -machine:$(MACHINE_TYPE)
+
+#
+# HACKHACK: We're specifying the subsystem as WINDOWSCE here because newer versions of CE MIPS
+#           compilers are retarded and won't link with any other subsystems.
+#
+!if $(MIPS)
+LIBRARIAN_FLAGS = $(LIBRARIAN_FLAGS) -subsystem:windowsce
+!endif
 
 LINK_TIME_CODE_GENERATION_LIBRARIAN_FLAGS =
 !if defined(LINK_TIME_CODE_GENERATION) && !defined(FORCENATIVEOBJECT)
@@ -3369,6 +3412,8 @@ MAPDUMP_CMD =
 
 ! IF $(X86)
 PASS0_OBJECTS=$(PASS0_X86_OBJECTS)
+! ELSEIF $(MIPS)
+PASS0_OBJECTS=$(PASS0_MIPS_OBJECTS)
 ! ELSEIF $(MPPC)
 PASS0_OBJECTS=$(PASS0_MPPC_OBJECTS)
 ! ELSEIF $(IA64)
@@ -5047,7 +5092,7 @@ $(DRIVER_SWITCH)
 -def:$(DLLDEF)
 !  ELSE
 $(DRIVER_ALIGN_SWITCH)
--subsystem:native$(SUBSYSTEM_NATVER)
+-subsystem:$(SUBSYSTEM)
 -entry:$(DRIVER_ENTRY)$(ENTRY_SUFFIX)
 !endif
 -out:$(TARGET)
@@ -5079,7 +5124,7 @@ $(SECTION_INFO2)
 $(LINKER_OPTIDATA)
 $(DRIVER_SWITCH)
 $(DRIVER_ALIGN_SWITCH)
--subsystem:native$(SUBSYSTEM_NATVER)
+-subsystem:$(SUBSYSTEM)
 -base:$(DRIVERBASE)
 -entry:$(GDI_DRIVER_ENTRY)$(GDI_ENTRY_SUFFIX)
 -out:$(TARGET)
@@ -5131,7 +5176,7 @@ $(LINKER_STACKSIZE_DLL)
 $(LINKER_OPTIDATA)
 $(DRIVER_SWITCH)
 $(DRIVER_ALIGN_SWITCH)
--subsystem:native$(SUBSYSTEM_NATVER)
+-subsystem:$(SUBSYSTEM)
 -base:$(DRIVERBASE)
 -entry:$(DRIVER_ENTRY)$(ENTRY_SUFFIX)
 -out:$(TARGET)

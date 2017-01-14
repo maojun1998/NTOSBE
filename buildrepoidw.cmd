@@ -5,6 +5,7 @@ REM  buildrepoidw.cmd
 REM ///////////////////////////////////////////////////////////////////////////
 
 pushd %~dp0
+setlocal ENABLEDELAYEDEXPANSION
 
 REM //
 REM // Verify that the script is running under the sizzle environment.
@@ -49,6 +50,28 @@ REM // Create the repository IDW directory.
 REM //
 
 mkdir "%BEREPOIDW%"
+
+REM //
+REM // Store the native IDW path.
+REM //
+
+set NATIVEBEREPOIDW=%BEREPOIDW%
+
+REM //
+REM // Switch the build environment if necessary.
+REM //
+
+set PROCESSOR_ARCHITECTURE_LOCASE=%PROCESSOR_ARCHITECTURE%
+call :LoCase PROCESSOR_ARCHITECTURE_LOCASE
+
+if [%PROCESSOR_ARCHITECTURE_LOCASE%] equ [amd64] (
+    set IDWARCH=x86
+)
+
+if not [%IDWARCH%] equ [%NTARCH%] (
+    echo Temporarily switching to %IDWARCH% build environment.
+    call ntswitch %IDWARCH% chk
+)
 
 REM //
 REM // Build repository IDW tools.
@@ -112,6 +135,7 @@ REM //
 
 :End
 
+endlocal
 popd
 
 exit /b 0
@@ -155,11 +179,47 @@ REM // Copy the built tool to the repository idw directory.
 REM //
 
 if not [%~3] equ [] (
-    copy /y "%NTTREE%\%~3" "%BEREPOIDW%\%~4"
+    copy /y "%NTTREE%\%~3" "%NATIVEBEREPOIDW%\%~4"
     if errorlevel 1 (
         echo Failed to copy %~1 to tools directory.
         exit /b 2
     )
 )
+
+exit /b 0
+
+REM //
+REM // ** LoCase Function **
+REM //
+REM // %~1 = Variable name
+REM //
+
+:LoCase
+set %~1=!%1:A=a!
+set %~1=!%1:B=b!
+set %~1=!%1:C=c!
+set %~1=!%1:D=d!
+set %~1=!%1:E=e!
+set %~1=!%1:F=f!
+set %~1=!%1:G=g!
+set %~1=!%1:H=h!
+set %~1=!%1:I=i!
+set %~1=!%1:J=j!
+set %~1=!%1:K=k!
+set %~1=!%1:L=l!
+set %~1=!%1:M=m!
+set %~1=!%1:N=n!
+set %~1=!%1:O=o!
+set %~1=!%1:P=p!
+set %~1=!%1:Q=q!
+set %~1=!%1:R=r!
+set %~1=!%1:S=s!
+set %~1=!%1:T=t!
+set %~1=!%1:U=u!
+set %~1=!%1:V=v!
+set %~1=!%1:W=w!
+set %~1=!%1:X=x!
+set %~1=!%1:Y=y!
+set %~1=!%1:Z=z!
 
 exit /b 0

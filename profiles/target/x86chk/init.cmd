@@ -13,7 +13,7 @@ REM //
 REM // Set optimisation settings
 REM //
 
-set MSC_OPTIMIZATION=/Odi
+set MSC_OPTIMIZATION=/Od
 
 REM //
 REM // Set environment shell colour
