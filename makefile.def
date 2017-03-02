@@ -237,6 +237,9 @@ SUBSYSTEM_VERSION_CURRENT =4.50
 SUBSYSTEM_VERSION_LATEST  =4.50
 LINKER_APP_VERSION=4.5
 LINKER_OS_VERSION=4.5
+# For now, only MinNT (4.5) uses MinWin, but other versions that use MinWin (e.g. => 6.1) can add
+# the following specifier to use MINWIN library path instead of BASE library path.
+ENABLE_MINWIN=1
 
 !elseif $(_NT_TARGET_VERSION) == 0x400 ## Windows NT 4 ##
 LATEST_WIN32_IE_VERSION   =0x0200
@@ -1613,7 +1616,11 @@ WIN32_LIBS=$(LIBC_LIB) \
            $(LIBRARY_PATH)\advapi32.lib \
            $(LIBRARY_PATH)\kernel32.lib
 
+!if defined(ENABLE_MINWIN)
+NTSS_LIBS=$(NT_LIBS) $(NT_CRT) $(MINWIN_LIB_PATH)\smdll.lib
+!else
 NTSS_LIBS=$(NT_LIBS) $(NT_CRT) $(BASE_LIB_PATH)\smdll.lib
+!endif
 
 OS2_LIBS=$(NT_LIBS)  $(SDK_LIB_PATH)\os2dll.lib
 
