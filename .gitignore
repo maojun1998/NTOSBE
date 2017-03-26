@@ -14,6 +14,13 @@ buildchk.err
 /siz_*.cmd
 /profiles/user/*
 /src/build.dat
+/src/sdktools/debuggers/dbglibs
+/src/sdktools/debuggers/exts/uextdll/MSG00001.bin
+/src/sdktools/debuggers/exts/uextdll/messages.h
+/src/sdktools/debuggers/exts/uextdll/messages.rc
+/src/sdktools/debuggers/ia64tools/include/EM_hints.h
+/src/sdktools/debuggers/ia64tools/include/decem.h
+/src/sdktools/debuggers/ia64tools/include/inst_ids.h
 /src.bin
 /tools/amd64/idw/*
 /tools/x86/idw/*
