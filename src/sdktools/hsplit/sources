@@ -8,3 +8,5 @@ TARGETTYPE=PROGRAM
 SOURCES=hsplit.c hsplit.rc
 
 UMTYPE=console
+
+USE_LIBCMT=1
