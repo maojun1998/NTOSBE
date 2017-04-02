@@ -10,3 +10,5 @@ GPSIZE=32
 SOURCES=hextract.c hextract.rc
 
 UMTYPE=console
+
+USE_LIBCMT=1

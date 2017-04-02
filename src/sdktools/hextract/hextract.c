@@ -73,10 +73,7 @@ char StringBuffer[STRING_BUFFER_SIZE];
 
 int OutputVersion = 0;
 
-int
-_CRTAPI1 main( argc, argv )
-int argc;
-char *argv[];
+int __cdecl main( int argc, char **argv )
 {
 
     if (!ProcessParameters( argc, argv )) {
