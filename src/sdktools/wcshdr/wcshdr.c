@@ -105,10 +105,7 @@ void AssertFail(PSZ pszfnam, int lineno, PBLOCKSTORE pbs, PSZ pszExp);
  */
 int fDebug = FALSE;
 
-void
-_CRTAPI1 main(
-    int argc,
-    PSZ argv[])
+void __cdecl main(int argc, PSZ argv[])
 {
     /*
      * block store.
@@ -436,6 +433,7 @@ GetDefinedNameBS(PBLOCKSTORE pbs) {
      */
     fprintf(stderr, "DEFINED NAME ???");
     error_exit(pbs, 2);
+    return FALSE;
 }
 
 BOOL

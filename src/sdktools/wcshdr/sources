@@ -34,3 +34,5 @@ SOURCES=wcshdr.c wcshdr.rc
 C_DEFINES=-D_OS2_20_=$(_OS2_20_) -Dnear= -Dfar= -Dpascal=
 
 UMTYPE=console
+
+USE_LIBCMT=1
