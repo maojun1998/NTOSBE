@@ -36,6 +36,9 @@
  *               #endif
  *   11-Nov-1994 RaymondC propagate ;internal-ness to trailers
  */
+
+#pragma warning(disable:4313)
+
 char *Version = "WCSHDR v1.20 1994-11-11:";
 
 #include <stdio.h>
