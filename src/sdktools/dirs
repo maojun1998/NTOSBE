@@ -9,4 +9,7 @@ DIRS= mkmsg       \
       rc          \
       mc          \
       touch       \
-      m4
+      m4          \
+      hsplit      \
+      hextract    \
+      wcshdr

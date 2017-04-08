@@ -117,6 +117,15 @@ if errorlevel 1 goto Error
 call :Build tracewpp sdktools\trace\tracewpp bldtools\tracewpp.exe idw\tracewpp.exe
 if errorlevel 1 goto Error
 
+call :Build hextract sdktools\hextract idw\hextract.exe idw\hextract.exe
+if errorlevel 1 goto Error
+
+call :Build hsplit sdktools\hsplit idw\hsplit.exe idw\hsplit.exe
+if errorlevel 1 goto Error
+
+call :Build wcshdr sdktools\wcshdr idw\wcshdr.exe idw\wcshdr.exe
+if errorlevel 1 goto Error
+
 REM //
 REM // Clean up temporary binary directory.
 REM //

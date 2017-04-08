@@ -46,6 +46,8 @@ dbghelp.dll         dbg\files\bin
 decem.dll           dbg\files\bin
 ext.dll             dbg\files\bin\winext
 exts.dll            dbg\files\bin\winxp
+hextract.exe        idw
+hsplit.exe          idw
 i386kd.exe          dbg\files\bin
 ia64kd.exe          dbg\files\bin
 imagehlp.dll        retail
@@ -64,4 +66,5 @@ symchk.exe          dbg\files\bin
 touch.exe           bldtools
 tracewpp.exe        bldtools
 uext.dll            dbg\files\bin\winext
+wcshdr.exe          idw
 windbg.exe          dbg\files\bin
