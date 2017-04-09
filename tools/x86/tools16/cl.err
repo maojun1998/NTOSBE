@@ -1,4 +1,7 @@
-				/* error messages */
+
+
+
+				
 
 2001	"too many symbols predefined with /D"
 2002    "memory-model conflict"
@@ -21,7 +24,7 @@
 2031    "too many command-line options"
 2000	"unknown command-line error"
 
-				/* warning messages */
+				
 
 4001	"listing overrides assembly output"
 4002	"ignoring unknown option '%s'"

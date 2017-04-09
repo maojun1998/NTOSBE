@@ -38,7 +38,7 @@
 8005	"Type: %s"
 8006	"Field: %s"
 8007	"Description: %s"
-8008	"Microsoft (R) Debugging Information Compactor  Version %d.%02d.%04d%c"
+8008	"Microsoft (R) Debugging Information Compactor  Version %d.%02d.%04d%c%c"
 8009	"Copyright (C) Microsoft Corp 1987-1996. All rights reserved."
 8010	"%% Complete: %d"
 8011	"Initial type size%s= %8.ld%cCompacted type size%s= %8.ld%c"
